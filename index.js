@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const errorHandler = require('./Middlewares/errorHandler');
 const newsRouter = require('./Routes/newsRouter');
 const authRouter = require('./Routes/authRouter');
+const facebookRouter = require('./Routes/facebookRouter');
 dotenv.config()
 
 require("./Config/connectToDb");
@@ -32,6 +33,7 @@ app.get("/", (req, res)=>{res.send("Welcome to Iwo Website Api version 1.0")})
 
 app.use("/api/news", newsRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/facebook", facebookRouter);
 
 app.use(express.json())
 

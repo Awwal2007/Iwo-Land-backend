@@ -55,7 +55,7 @@ const getAllNews = async (req, res, next)=>{
             return res.status(200).json({
                 status: "success",
                 message: "There is no news in the database",
-                foods: []
+                news: []
             })
         }
 
