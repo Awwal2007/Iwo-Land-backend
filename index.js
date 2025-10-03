@@ -18,7 +18,7 @@ require("./Config/connectToDb");
 const clientDomain = process.env.client_domain
 
 app.use(cors({
-    origin: `${clientDomain}`|| 'http://localhost:5173' || 'https://s03m7k8l-5173.uks1.devtunnels.ms/'
+    origin: `${clientDomain}`|| 'http://localhost:5173' || 'https://s03m7k8l-5173.uks1.devtunnels.ms' || 'http://localhost:5174'
 }))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
