@@ -17,9 +17,7 @@ require("./Config/connectToDb");
 
 const clientDomain = process.env.client_domain
 
-app.use(cors({
-    origin: `${clientDomain}` || 'https://www.iwoland.com'
-}))
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(morgan("dev"))
