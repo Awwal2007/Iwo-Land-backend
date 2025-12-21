@@ -6,7 +6,7 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "Iwo-Blogs",
-    allowed_formats: ["png", "jpg", "gif"],
+    allowed_formats: ["png", "jpg", "gif", "jpeg"],
   },
 });
 

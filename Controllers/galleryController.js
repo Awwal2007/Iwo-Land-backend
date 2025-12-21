@@ -1,25 +1,26 @@
 const galleryModel = require('../Models/gallery')
 
-const createHeroImage = async (req, res, next) => {
+const createGalleryImage = async (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({
         status: "error",
-        message: "Main image is required",
+        message: "Gallery image is required",
       });
     }
 
-    const hero = await galleryModel.create({
+    const gallery = await galleryModel.create({
       ...req.body,
-      mainImage: req.file.path.replace(/\\/g, "/"),
+      gallery: req.file.path.replace(/\\/g, "/"),
       createdBy: req.user?.id || null,
     });
 
     res.status(201).json({
       status: "success",
-      message: "Hero Image created successfully!",
-      hero
+      message: "Gallery Image created successfully!",
+      gallery
     });
+
   } catch (error) {
     console.error(error);
     next(error);
@@ -27,38 +28,30 @@ const createHeroImage = async (req, res, next) => {
 };
 
 
-const getAllHeroImage = async (req, res, next)=>{
-    const { category } = req.query;
-    console.log(category);
-    
+const getAllGalleryImage = async (req, res, next)=>{
     try {
-         // Build query object
-        const filter = {};
-        if (category) {
-            filter.category = category;
-        }
 
-        const hero = await galleryModel.find(filter).sort({ createdAt: -1 });
+        const gallery = await galleryModel.find().sort({ createdAt: -1 });
         
-        if(!hero){
+        if(!gallery){
             return res.status(404).json({
                 status: "error",
-                message: "hero image not found"
+                message: "gallery image not found"
             })
         }
 
-        if(hero.length === 0){
+        if(gallery.length === 0){
             return res.status(200).json({
                 status: "success",
-                message: "There is no hero image in the database",
-                hero: []
+                message: "There is no gallery image in the database",
+                gallery: []
             })
         }
 
         res.status(200).json({
             status: 'success',
-            message: "hero image fetched!",
-            hero
+            message: "gallery image fetched!",
+            gallery
         })
     } catch (error) {
         console.log(error);
@@ -66,21 +59,21 @@ const getAllHeroImage = async (req, res, next)=>{
     }
 }
 
-const getHeroImageById = async (req, res, next)=>{
+const getGalleryImageById = async (req, res, next)=>{
     const {id} = req.params
     try {
-        const hero = await galleryModel.findById(id)
-        if(!hero){
+        const gallery = await galleryModel.findById(id)
+        if(!gallery){
             return res.status(404).json({
                 status: "error",
-                message: `hero image with this id: ${id} not found`
+                message: `gallery image with this id: ${id} not found`
             })
         }
 
         res.status(200).json({
             status: 'success',
-            message: "hero image fetched!",
-            hero
+            message: "gallery image fetched!",
+            gallery
         })
     } catch (error) {
         console.log(error);
@@ -88,19 +81,19 @@ const getHeroImageById = async (req, res, next)=>{
     }
 }
 
-const deleteHeroImageById = async (req, res, next)=>{
+const deleteGalleryImageById = async (req, res, next)=>{
     const {id} = req.params
     try {
-        const hero = await galleryModel.findByIdAndDelete(id)
-        if(!hero){
+        const gallery = await galleryModel.findByIdAndDelete(id)
+        if(!gallery){
             return res.status(404).json({
                 status: "error",
-                message: `hero image with id: ${id} not found`
+                message: `gallery image with id: ${id} not found`
             })
         }
         res.status(202).json({
             status: "error",
-            message: "Hero Image deleted successfully"
+            message: "gallery Image deleted successfully"
         })
     } catch (error) {
         console.log(error);
@@ -108,33 +101,9 @@ const deleteHeroImageById = async (req, res, next)=>{
     }
 }
 
-const updateHeroImage = async (req, res, next)=>{
-    const {id} = req.params.id
-    const { title, } = req.body;
-    try {
-        if (!req.file || !req.file.path) {
-            return res.status(400).json({
-                status: "error",
-                message: "Image upload failed or missing",
-            });
-        }
-        const updatedData = { title, image: req.file.path };
-        const updatedEvent = await galleryModel.findByIdAndUpdate(id, updatedData, { new: true });
-        res.status(200).json({
-            status: "success",
-            message: "hero image update successfully",
-            updatedEvent
-        });
-    } catch (error) {
-        console.log(error);
-        next(error)      
-    }
-}
-
 module.exports = {
-    createHeroImage,
-    getAllHeroImage,
-    getHeroImageById,
-    deleteHeroImageById,
-    updateHeroImage
+    createGalleryImage,
+    getAllGalleryImage,
+    getGalleryImageById,
+    deleteGalleryImageById,
 }
