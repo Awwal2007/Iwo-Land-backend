@@ -30,7 +30,7 @@ if(process.env.NODE_ENV === "development"){
 }
 
 //Routes
-app.get("/", (req, res)=>{res.send("Welcome to Iwo Website Api version 1.0")})
+app.get("/", (req, res)=>{res.send("Welcome to Iwo Website Api version 1.00")})
 
 
 app.use("/api/news", newsRouter);
