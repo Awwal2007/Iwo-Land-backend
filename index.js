@@ -23,9 +23,12 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(morgan("dev"))
 
-app.listen(500, ()=>{
-    console.log('listen to port 500');    
-})
+if(process.env.NODE_ENV === "development"){
+    app.listen(500, ()=>{
+        console.log('listen to port 500');    
+    })
+}
+
 //Routes
 app.get("/", (req, res)=>{res.send("Welcome to Iwo Website Api version 1.0")})
 
@@ -46,3 +49,5 @@ app.all("/{*any}", (req, res) => {
 // });
 
 app.use(errorHandler);
+
+module.exports = app;
