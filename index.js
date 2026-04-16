@@ -10,9 +10,8 @@ const facebookRouter = require('./Routes/facebookRouter');
 const galleryRouter = require('./Routes/galleryRouter');
 dotenv.config()
 
-require("./Config/connectToDb");
+const connectToDb = require("./Config/connectToDb");
 // require("./Services/Nodemailer/transporter");
-
 // const newsRouter = require('./Routes/newsRouter');
 
 
@@ -23,11 +22,20 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(morgan("dev"))
 
-if(process.env.NODE_ENV === "development"){
-    app.listen(500, ()=>{
-        console.log('listen to port 500');    
-    })
+const startServer = async()=> {
+    try {
+        await connectToDb()
+        if(process.env.NODE_ENV !== "production"){
+            app.listen(500, ()=>{
+                console.log('listen to port 500');    
+            })
+        }
+    } catch (error) {
+        console.log('failed to start server');        
+    }
 }
+
+startServer()
 
 //Routes
 app.get("/", (req, res)=>{res.send("Welcome to Iwo Website Api version 1.00")})
@@ -37,8 +45,6 @@ app.use("/api/news", newsRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/facebook", facebookRouter);
 app.use("/api/gallery", galleryRouter);
-
-app.use(express.json())
 
 app.all("/{*any}", (req, res) => {
     res.json(`${req.method} ${req.originalUrl} is not an endpoint on this server.`)
