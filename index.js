@@ -22,23 +22,27 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(morgan("dev"))
 
-const startServer = async()=> {
-    try {
-        await connectToDb()
-        if(process.env.NODE_ENV !== "production"){
-            app.listen(500, ()=>{
-                console.log('listen to port 500');    
-            })
-        }
-    } catch (error) {
-        console.log('failed to start server');        
+// Database connection handling
+const startServer = async () => {
+  try {
+    await connectToDb();
+    // Only listen on a port if not in a Vercel/Production environment
+    if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+      const port = process.env.PORT || 500;
+      app.listen(port, () => {
+        console.log(`Server listening on port ${port}`);
+      });
     }
-}
+  } catch (error) {
+    console.error("Failed to connect to Database", error);
+  }
+};
 
-startServer()
+// Initiate connection
+startServer();
 
 //Routes
-app.get("/", (req, res)=>{res.send("Welcome to Iwo Website Api version 1.00")})
+app.get("/", (req, res)=>{ res.send("Welcome to Iwo Website Api version 1.00") })
 
 
 app.use("/api/news", newsRouter);
