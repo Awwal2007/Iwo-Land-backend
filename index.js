@@ -41,6 +41,16 @@ const startServer = async () => {
 // Initiate connection
 startServer();
 
+// Ensure DB is connected before handling requests (important for Vercel serverless)
+app.use(async (req, res, next) => {
+  try {
+    await connectToDb();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 //Routes
 app.get("/", (req, res)=>{ res.send("Welcome to Iwo Website Api version 1.00") })
 
