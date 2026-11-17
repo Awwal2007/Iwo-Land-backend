@@ -10,6 +10,6 @@ authRouter.post("/signup",
      signup)
 authRouter.post("/login", login )
 authRouter.post("/verify/:token", verifyEmail)
-authRouter.put("/update-password/:id", updateUserPassword)
+authRouter.put("/update-password/:id", isLoggedIn, updateUserPassword)
 
 module.exports = authRouter

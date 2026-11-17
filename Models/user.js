@@ -93,7 +93,7 @@ const userSchema = new mongoose.Schema({
   },
   verificationToken: String,
 
-  verificationExp: String,
+  verificationExp: Number,
   
   // Ratings and Stats
   rating: {

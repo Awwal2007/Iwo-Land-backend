@@ -92,7 +92,7 @@ const deleteGalleryImageById = async (req, res, next)=>{
             })
         }
         res.status(202).json({
-            status: "error",
+            status: "success",
             message: "gallery Image deleted successfully"
         })
     } catch (error) {

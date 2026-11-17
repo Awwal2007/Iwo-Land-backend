@@ -103,7 +103,7 @@ const deleteNewsById = async (req, res, next)=>{
             })
         }
         res.status(202).json({
-            status: "error",
+            status: "success",
             message: "News deleted successfully"
         })
     } catch (error) {
@@ -113,7 +113,7 @@ const deleteNewsById = async (req, res, next)=>{
 }
 
 const updateNews = async (req, res, next)=>{
-    const {id} = req.params.id
+    const { id } = req.params;
     const { title, date, description } = req.body;
     try {
         if (!req.file || !req.file.path) {
@@ -122,8 +122,19 @@ const updateNews = async (req, res, next)=>{
                 message: "Image upload failed or missing",
             });
         }
-        const updatedData = { title, date, description, image: req.file.path };
+        const updatedData = {
+            title,
+            date,
+            description,
+            mainImage: req.file.path.replace(/\\/g, '/'),
+        };
         const updatedEvent = await newsModel.findByIdAndUpdate(id, updatedData, { new: true });
+        if (!updatedEvent) {
+            return res.status(404).json({
+                status: "error",
+                message: `news with id: ${id} not found`
+            });
+        }
         res.status(200).json({
             status: "success",
             message: "news update successfully",

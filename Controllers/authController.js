@@ -6,9 +6,15 @@ const generateRandomString = require("../Utils/generateRandomStrings")
 
 //Signup
 const signup = async (req, res, next)=>{
-    const {password, email, name,} = req.body
+    const {password, email, name} = req.body
     // const file = req.file.path
     try {
+        if (!name || !email || !password) {
+            return res.status(400).json({
+                status: "error",
+                message: "Name, email, and password are required",
+            });
+        }
         // if (!req.file || !req.file.path) {
         //     return res.status(400).json({
         //         status: "error",
@@ -21,7 +27,14 @@ const signup = async (req, res, next)=>{
         const token = generateRandomString(8)
         const verificationExp = Date.now() + 300000
 
-        const user = await userModel.create({...req.body, password: hashedPassword, verificationToken: token, verificationExp})
+        const { role, isVerified, ...safeBody } = req.body;
+        const user = await userModel.create({
+            ...safeBody,
+            password: hashedPassword,
+            isVerified: false,
+            verificationToken: token,
+            verificationExp
+        })
 
         if(!user){
            return res.status(404).json({
@@ -116,7 +129,7 @@ const login = async (req, res, next) => {
         }
 
         if (!user.isVerified) {
-            const now = new Date();
+            const now = Date.now();
 
             // ✅ If verification code is missing or expired, regenerate
             if (!user.verificationExp || user.verificationExp < now) {
@@ -124,7 +137,7 @@ const login = async (req, res, next) => {
                 const newCode = generateRandomString(8) 
 
                 user.verificationToken = newCode;
-                user.verificationExp = new Date(Date.now() + 10 * 60 * 1000); // valid for 10 mins
+                user.verificationExp = Date.now() + 10 * 60 * 1000; // valid for 10 mins
                 await user.save();
 
                 // ✅ Send the new code via email (mock or real)
@@ -177,6 +190,9 @@ const updateUserPassword = async (req, res, next) => {
   const { currentPassword, newPassword } = req.body;
 
   try {
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ status: 'error', message: 'Current password and new password are required' });
+    }
     const user = await userModel.findById(id);
     if (!user) {
       return res.status(404).json({ status: 'error', message: 'User not found' });

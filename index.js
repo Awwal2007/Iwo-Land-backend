@@ -28,7 +28,7 @@ const startServer = async () => {
     await connectToDb();
     // Only listen on a port if not in a Vercel/Production environment
     if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
-      const port = process.env.PORT || 500;
+      const port = process.env.PORT || 5000;
       app.listen(port, () => {
         console.log(`Server listening on port ${port}`);
       });
@@ -51,7 +51,10 @@ app.use("/api/facebook", facebookRouter);
 app.use("/api/gallery", galleryRouter);
 
 app.all("/{*any}", (req, res) => {
-    res.json(`${req.method} ${req.originalUrl} is not an endpoint on this server.`)
+    res.status(404).json({
+        status: "error",
+        message: `${req.method} ${req.originalUrl} is not an endpoint on this server.`
+    })
 })
 // app.use((req, res, next) => {
 //   res.set('Cache-Control', 'no-store');
